@@ -62,8 +62,9 @@ public class Arbol_Archivo {
             int dat = arbol.readInt();
             if (dat == -1) {
                 return pos;
-            }
-            arbol.skipBytes(8);
+            }else{
+                arbol.seek(dat);
+            } 
             return busqueda(id);
         } else {
             arbol.skipBytes(4);
@@ -72,23 +73,24 @@ public class Arbol_Archivo {
 
             if (dat == -1) {
                 return pos;
-            }
-            arbol.skipBytes(4);
+            }else{
+                arbol.seek(dat);
+            } 
             return busqueda(id);
 
         }
 
     }
-    
-   public void imprimir() throws IOException{
-       arbol.seek(0);
-       
-    System.out.println(arbol.readLong()+" "+arbol.readInt()+" "+arbol.readInt()+" "+arbol.readInt());
-    System.out.println(arbol.readLong()+" "+arbol.readInt()+" "+arbol.readInt()+" "+arbol.readInt());
-    System.out.println(arbol.readLong()+" "+arbol.readInt()+" "+arbol.readInt()+" "+arbol.readInt());
-        
-        
+
+    public void imprimir() throws IOException {
+        arbol.seek(0);
+        while (true) {
+            System.out.println(arbol.readLong() + " " + arbol.readInt() + " " + arbol.readInt() + " " + arbol.readInt());
+            if (arbol.getFilePointer() == arbol.length()) {
+                break;
+            }
+        }
+
     }
-    
 
 }
