@@ -22,11 +22,7 @@ public class Arbol_Archivo {
         arbol = new RandomAccessFile("arbol" + archivo_dato, "rw");
         archivo = new RandomAccessFile(archivo_dato, "rw");
 
-    }
-
-    private long obtener_pos_archivo() throws IOException {
-        return archivo.length();
-    }
+    } 
 
     public boolean añadir(long id) throws IOException {
         arbol.seek(0);
@@ -46,7 +42,7 @@ public class Arbol_Archivo {
             arbol.writeLong(id);
             arbol.writeInt(-1);
             arbol.writeInt(-1);
-            arbol.writeInt((int) obtener_pos_archivo());
+            arbol.writeInt((int) archivo.length());
         }
         return true;
     }
@@ -62,9 +58,9 @@ public class Arbol_Archivo {
             int dat = arbol.readInt();
             if (dat == -1) {
                 return pos;
-            }else{
+            } else {
                 arbol.seek(dat);
-            } 
+            }
             return busqueda(id);
         } else {
             arbol.skipBytes(4);
@@ -73,13 +69,47 @@ public class Arbol_Archivo {
 
             if (dat == -1) {
                 return pos;
-            }else{
+            } else {
                 arbol.seek(dat);
-            } 
+            }
             return busqueda(id);
 
         }
 
+    }
+
+    public long buscar(long id) throws IOException{
+        arbol.seek(0);
+        return search(id);
+    }
+    private long search(long id) throws IOException {
+        long t = arbol.readLong();
+        if (id == t) {
+            arbol.skipBytes(8);
+            return arbol.readInt();
+        }
+        if (id < t) {
+            long pos = arbol.getFilePointer();
+            int dat = arbol.readInt();
+            if (dat == -1) {
+                return -1;
+            } else {
+                arbol.seek(dat);
+            }
+            return search(id);
+        } else {
+            arbol.skipBytes(4);
+            long pos = arbol.getFilePointer();
+            int dat = arbol.readInt();
+
+            if (dat == -1) {
+                return -1;
+            } else {
+                arbol.seek(dat);
+            }
+            return search(id);
+
+        }
     }
 
     public void imprimir() throws IOException {
